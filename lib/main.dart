@@ -30,6 +30,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<String> vehicleNames = [
+    'car1',
+    'car2',
+    'car3',
+    'car4',
+    'car5',
+    'car6',
+    'car7',
+    'car8',
+    'car9',
+    'car10'
+  ];
   String currentVehicleName = 'Vehicle name';
 
   @override
@@ -45,16 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Container(
+              child: Image.asset(
+                'assets/images/${vehicleNames[0]}.jpg',
                 height: 300,
-                color: Colors.blue,
+                fit: BoxFit.cover,
               ),
             ),
             OutlinedButton(
                 onPressed: () => {},
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.all(10.0),
-                  side: BorderSide(width: 4.0, color: Colors.black),
+                  side: const BorderSide(width: 4.0, color: Colors.black),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                 ),
