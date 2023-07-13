@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_guesser/image_card.dart';
 
@@ -30,7 +31,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<String> vehicleNames = [
     'car1',
     'car2',
@@ -49,6 +50,26 @@ class _MyHomePageState extends State<MyHomePage> {
   double startDragPercentScroll = 0.0;
   double finishScrollStart = 0.0;
   double finishScrollEnd = 0.0;
+  late AnimationController finishScrollController;
+
+  @override
+  initState() {
+    super.initState();
+    finishScrollController = AnimationController(
+        duration: const Duration(milliseconds: 150), vsync: this)
+      ..addListener(() {
+        setState(() {
+          scrollPercent = lerpDouble(finishScrollStart, finishScrollEnd,
+              finishScrollController.value)!;
+        });
+      });
+  }
+
+  @override
+  dispose() {
+    finishScrollController.dispose();
+    super.dispose();
+  }
 
   List<Widget> buildCards() {
     List<Widget> cardsList = [];
@@ -94,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
     finishScrollStart = scrollPercent;
     finishScrollEnd =
         (scrollPercent * vehicleNames.length).round() / vehicleNames.length;
+    finishScrollController.forward(from: 0.0);
     setState(() {
       startDrag = Offset.zero;
       startDragPercentScroll = 0.0;
