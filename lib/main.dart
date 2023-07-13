@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_guesser/image_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,13 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Image.asset(
-                'assets/images/${vehicleNames[0]}.jpg',
-                height: 300,
-                fit: BoxFit.cover,
-              ),
-            ),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: ImageCard(
+                  imageName: vehicleNames[0],
+                  onTap: () {},
+                )),
             OutlinedButton(
                 onPressed: () => {},
                 style: OutlinedButton.styleFrom(
