@@ -18,8 +18,9 @@ class ImageCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
         child: Image.asset(
           'assets/images/$imageName.jpg',
+          width: 300,
           height: 300,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
         ),
       ),
     );

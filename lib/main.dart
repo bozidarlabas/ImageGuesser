@@ -43,7 +43,63 @@ class _MyHomePageState extends State<MyHomePage> {
     'car9',
     'car10'
   ];
-  String currentVehicleName = 'Vehicle name';
+  String currentVehicleName = '';
+  double scrollPercent = 0.0;
+  late Offset startDrag;
+  double startDragPercentScroll = 0.0;
+  double finishScrollStart = 0.0;
+  double finishScrollEnd = 0.0;
+
+  List<Widget> buildCards() {
+    List<Widget> cardsList = [];
+    for (int i = 0; i < vehicleNames.length; i++) {
+      cardsList.add(buildCard(i, scrollPercent));
+    }
+    return cardsList;
+  }
+
+  Widget buildCard(int cardIndex, double scrollPercent) {
+    final cardScrollPercent = scrollPercent / (1 / vehicleNames.length);
+    return FractionalTranslation(
+      translation: Offset(cardIndex - cardScrollPercent, 0.0),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ImageCard(
+          imageName: vehicleNames[cardIndex],
+          onTap: () {},
+        ),
+      ),
+    );
+  }
+
+  onHorizontalDragStart(DragStartDetails details) {
+    startDrag = details.globalPosition;
+    startDragPercentScroll = scrollPercent;
+  }
+
+  onHorizontalDragUpdate(DragUpdateDetails details) {
+    final currentDrag = details.globalPosition;
+    final dragDistance = currentDrag.dx - startDrag.dx;
+    final singleCardDragPercent = dragDistance / context.size!.width;
+    setState(() {
+      scrollPercent = (startDragPercentScroll +
+              (-singleCardDragPercent / vehicleNames.length))
+          .clamp(0.0, 1.0 - (1 / vehicleNames.length));
+      currentVehicleName =
+          vehicleNames[(scrollPercent * vehicleNames.length).round()];
+    });
+  }
+
+  onHorizontalDragEnd(DragEndDetails details) {
+    finishScrollStart = scrollPercent;
+    finishScrollEnd =
+        (scrollPercent * vehicleNames.length).round() / vehicleNames.length;
+    setState(() {
+      startDrag = Offset.zero;
+      startDragPercentScroll = 0.0;
+      currentVehicleName = '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +112,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ImageCard(
-                  imageName: vehicleNames[0],
-                  onTap: () {},
-                )),
+            GestureDetector(
+              onHorizontalDragStart: onHorizontalDragStart,
+              onHorizontalDragUpdate: onHorizontalDragUpdate,
+              onHorizontalDragEnd: onHorizontalDragEnd,
+              behavior: HitTestBehavior.translucent,
+              child: Stack(
+                children: buildCards(),
+              ),
+            ),
             OutlinedButton(
                 onPressed: () => {},
                 style: OutlinedButton.styleFrom(
